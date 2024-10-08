@@ -90,8 +90,8 @@ int main(int argc, char** argv)
     }
 
     // Optionally, resize the image for better visualization
-    cv::resize(image, image, cv::Size(900,0.832*900), 0, 0, cv::INTER_NEAREST);
-    
+    // cv::resize(image, image, cv::Size(900,0.832*900), 0, 0, cv::INTER_NEAREST);
+    cv::imwrite("obstacle_map.pgm", image);
     // Display the image
     cv::imshow("Obstacle Map", image);
     cv::waitKey(0); // Wait for a key press to close the window
