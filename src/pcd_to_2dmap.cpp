@@ -9,7 +9,7 @@ int main(int argc, char** argv)
     // Load PCD file
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
-    if (pcl::io::loadPCDFile<pcl::PointXYZ>("/home/grvc/Escritorio/output_filtered_sor.pcd", *cloud) == -1)
+    if (pcl::io::loadPCDFile<pcl::PointXYZ>("/home/grvc/Escritorio/filtered_scans_obstaculos.pcd", *cloud) == -1)
     {
         PCL_ERROR("Couldn't read the PCD file");
         return -1;
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     std::cout << "zmax: " << max_z << " meters" << std::endl;
 
     // Defining grid parameters
-    float grid_resolution = 0.25; // 25cm per grid cell
+    float grid_resolution = 0.25; // 25cm² per grid cell
     float map_width = width;
     float map_height = height;
 
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 
     // Define height to mark as obstacle
     float height_threshold_min = 0.5; // 0.5 meters height threshold to be considered obstacle
-    float height_threshold_max = 7.5; // above 7.5 meters is considered ceiling
+    float height_threshold_max = 5; // above 7.5 meters is considered ceiling
 
     // Calculate map grid.
     for (const auto& point : cloud->points) {
@@ -82,10 +82,10 @@ int main(int argc, char** argv)
     cv::Mat image(grid_height, grid_width, CV_8UC1);
 
     // Convert the binary map to an image
-    for (int i = 0; i < grid_height; ++i) {
-        for (int j = 0; j < grid_width; ++j) {
+    for (int i = 0; i < grid_height; i++) {
+        for (int j = 0; j < grid_width; j++) {
             // Set pixels: 255 for free space (0) and 0 for obstacles (1)
-            image.at<uchar>(i, j) = obstacle_map[i][j] == 0 ? 255 : 0;
+            image.at<uchar>(i, j) = obstacle_map[grid_height-1-i][j] == 0 ? 255 : 0;
         }
     }
 
