@@ -13,4 +13,6 @@ Run simply with:
 ```
 ./pcd_to_2dmap
 ```
-Code will search for a .pcd file at /home/grvc/Escritorio/filtered_scans_obstaculos.pcd
+## Explanation.
+Code will search for a .pcd file in the specified path, then set any points between the specified minimum and maximum heights as obstacles, and then it will save the resulting 2D map in a .pgm file in the /build folder.
+Then it's set to define any points between 0.5 and 5m as obstacles, ignoring ground and ceiling.
