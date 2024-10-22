@@ -8,12 +8,11 @@ int main(int argc, char** argv)
 {
     // Load PCD file
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-
-    if (pcl::io::loadPCDFile<pcl::PointXYZ>("/home/grvc/Escritorio/filtered_scans_obstaculos.pcd", *cloud) == -1)
-    {
+    if (pcl::io::loadPCDFile<pcl::PointXYZ>("/home/grvc/Escritorio/filtered_scans_obstaculos.pcd", *cloud) == -1){
         PCL_ERROR("Couldn't read the PCD file");
         return -1;
     }
+    std::cout << "Using default map. To change map, replace the following file, maintaining the name and location:\n /home/grvc/Escritorio/filtered_scans_obstaculos.pcd" << std::endl;
 
     // Finding map dimensions
     float min_x = std::numeric_limits<float>::max();
@@ -92,9 +91,10 @@ int main(int argc, char** argv)
     // Optionally, resize the image for better visualization
     // cv::resize(image, image, cv::Size(900,0.832*900), 0, 0, cv::INTER_NEAREST);
     cv::imwrite("obstacle_map.pgm", image);
+    std::cout << "Map saved as obstacle_map.pgm" << std::endl;
     // Display the image
     cv::imshow("Obstacle Map", image);
+    std::cout << "Displaying map. Press any key to close the window." << std::endl;
     cv::waitKey(0); // Wait for a key press to close the window
-
     return 0;
 }
