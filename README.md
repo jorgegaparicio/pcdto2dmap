@@ -13,3 +13,4 @@ Run simply with:
 ```
 ./pcd_to_2dmap
 ```
+Code will search for a .pcd file at /home/grvc/Escritorio/filtered_scans_obstaculos.pcd
