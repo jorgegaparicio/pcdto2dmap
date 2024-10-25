@@ -11,7 +11,7 @@ make
 ```
 Run simply with:
 ```
-./pcd_to_2dmap
+./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [name for save file]
 ```
 ## Explanation.
 Code will search for a .pcd file in the specified path, then set any points between the specified minimum and maximum heights as obstacles, creating a 2D map with the specified resolution, and then it will save the resulting 2D map in a .pgm file in the /build folder.
