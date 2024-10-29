@@ -12,7 +12,7 @@ int main(int argc, char** argv){
     float height_threshold_min = 0.5; // 0.5 meters height threshold to be considered obstacle
     float height_threshold_max = 5; // above 5 meters is considered ceiling
     float grid_resolution = 0.25; // 25cm² per grid cell
-
+    int iter = 2;
     if(argc<2){
         std::cout << "Using default arguments." << std::endl;
     }
@@ -24,7 +24,7 @@ int main(int argc, char** argv){
         height_threshold_min = std::atof(argv[2]);
         height_threshold_max = std::atof(argv[3]);
         if(height_threshold_min > height_threshold_max){
-           std::cout << "Minimum height can't be larger than maximum height. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [name for save file]" << std::endl;
+           std::cout << "Minimum height can't be larger than maximum height. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
         return -1;
         }
         pcd_path = std::string(argv[1]);
@@ -35,11 +35,11 @@ int main(int argc, char** argv){
         height_threshold_max = std::atof(argv[3]);
         grid_resolution = std::atof(argv[4]);
         if(height_threshold_min > height_threshold_max){
-           std::cout << "Minimum height can't be larger than maximum height. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [name for save file]" << std::endl;
+           std::cout << "Minimum height can't be larger than maximum height. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
         return -1;
         }
         if(grid_resolution <= 0){
-           std::cout << "Grid resolution must be a positive float. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [name for save file]" << std::endl;
+           std::cout << "Grid resolution must be a positive float. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
         return -1;
         }
         pcd_path = std::string(argv[1]);
@@ -49,20 +49,42 @@ int main(int argc, char** argv){
         height_threshold_min = std::atof(argv[2]);
         height_threshold_max = std::atof(argv[3]);
         grid_resolution = std::atof(argv[4]);
+        iter = std::atof(argv[5]);
         if(height_threshold_min > height_threshold_max){
-           std::cout << "Minimum height can't be larger than maximum height. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [name for save file]" << std::endl;
+           std::cout << "Minimum height can't be larger than maximum height. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
         return -1;
         }
         if(grid_resolution <= 0){
-           std::cout << "Grid resolution must be a positive float. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [name for save file]" << std::endl;
+           std::cout << "Grid resolution must be a positive float. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
+        return -1;
+        }
+        if(iter <= 0){
+           std::cout << "Size of obstacles must be greater than 0. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
+        return -1;
+        }
+
+        pcd_path = std::string(argv[1]);
+        std::cout << "Using file at:" << pcd_path << std::endl;
+    }
+    else if(argc == 7){
+        height_threshold_min = std::atof(argv[2]);
+        height_threshold_max = std::atof(argv[3]);
+        grid_resolution = std::atof(argv[4]);
+        iter = std::atof(argv[5]);
+        if(height_threshold_min > height_threshold_max){
+           std::cout << "Minimum height can't be larger than maximum height. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
+        return -1;
+        }
+        if(grid_resolution <= 0){
+           std::cout << "Grid resolution must be a positive float. \nUsage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
         return -1;
         }
         pcd_path = std::string(argv[1]);
-        pgm_filename = std::string(argv[5]) + ".pgm";
+        pgm_filename = std::string(argv[6]) + ".pgm";
         std::cout << "Using file at:" << pcd_path << std::endl;
     }
     else{
-        std::cout << "Unexpected error. Usage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [name for save file]" << std::endl;
+        std::cout << "Unexpected error. Usage: ./pcd_to_2dmap [/path/to/file.pcd] [minimum height in meters] [maximum height in meters] [grid resolution in meters] [integer, size of obstacles] [name for save file]" << std::endl;
         return -1;
     }
 
@@ -101,7 +123,7 @@ int main(int argc, char** argv){
     std::cout << "Height: " << height << " meters" << std::endl;
     std::cout << "Minimum height for obstacle: " << height_threshold_min << " meters" << std::endl;
     std::cout << "Maximum height for obstacle: " << height_threshold_max << " meters" << std::endl;
-    std::cout << "Grid resolution: " << grid_resolution << " meters squared per cell" << std::endl;
+    std::cout << "Grid resolution: " << grid_resolution << "^2 meters squared per cell" << std::endl;
     /*std::cout << "xmin: " << min_x << " meters" << std::endl;
     std::cout << "xmax: " << max_x << " meters" << std::endl;
     std::cout << "ymin: " << min_y << " meters" << std::endl;
@@ -141,7 +163,7 @@ int main(int argc, char** argv){
             image.at<uchar>(i, j) = obstacle_map[grid_height-1-i][j] == 0 ? 255 : 0;
         }
     }
-
+    cv::erode(image,image,cv::Mat(),cv::Point(-1,-1),iter);
     // Optionally, resize the image for better visualization
     // cv::resize(image, image, cv::Size(900,0.832*900), 0, 0, cv::INTER_NEAREST);
     cv::imwrite(pgm_filename, image);
